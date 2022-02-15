@@ -24,6 +24,8 @@ const Leaflet = () => {
 
         if (layerType === 'polygon') {
             const values = format(layer.getLatLngs()[0]);
+            values.push(values[0]);
+
             setPoints(values);
         }
 
@@ -44,14 +46,25 @@ const Leaflet = () => {
         Object.values(_layers).map(({ editing }) => {
             const values = Object.values(editing.latlngs[0]).map(v => { return v; });
             const valueFormat = format(values[0]);
+            valueFormat.push(valueFormat[0]);
+
+            editableFG.current.clearLayers();
+            const newPolygon = polygon(valueFormat);
+            editableFG.current.addLayer(newPolygon);
 
             setPoints(valueFormat);
         })
     }
 
-    const onDelete = () => setPoints([]);
+    const onDelete = () => {
+        editableFG.current.clearLayers();
+
+        setPoints([]);
+    };
 
     const setLocations = () => {
+        editableFG.current.clearLayers();
+
         const layerArr = [
             [
                 -18.841656351709,
